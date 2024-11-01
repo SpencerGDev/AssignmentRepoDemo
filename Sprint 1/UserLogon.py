@@ -9,6 +9,10 @@ class UserInfo:
    password: str
    phoneNumber: str
    SSN: str
+   symptom_list: list
+   insurance: bool 
+
+
    # add fields for the other info listed in activity 2. add input for create_account
    
    
@@ -27,12 +31,12 @@ class UserLogin:
       return(False)
    
 
-   def login(self):
+   def login(self) -> bool:
       """
       Returns true if login was successful, else false 
       """
-      email = input("Enter your email you have an account with.")
-      password = input("Enter your password")
+      email = input("Enter the email you have an account with: ")
+      password = input("Enter your password: ")
       for user in self.UserArray:
          if (user.email == email):
             if(user.password == password):
@@ -46,7 +50,7 @@ class UserLogin:
    def create_account(self): # max entry length needs to be added, ex max 9 chars for ssn. should be in the second activity
       
       while(True):
-        firstName = input("Enter your first name:\n")
+        firstName = input("Enter your first name: ")
         
         if(firstName == "cancel"):
            return()
@@ -56,7 +60,7 @@ class UserLogin:
         
 
       while(True):
-        lastName = input("Enter your last name:\n")
+        lastName = input("Enter your last name: ")
         
         if(lastName == "cancel"):
            return()
@@ -83,7 +87,7 @@ class UserLogin:
    
     
       while(True):
-        password = input("Enter your password:\n")
+        password = input("Enter your password: ")
 
         if(password == "cancel"):
            return()        
@@ -97,10 +101,10 @@ class UserLogin:
          
          if(phoneNumber == "cancel"):
             return()
-         if(len(phoneNumber) == 10 and phoneNumber.isdigit()): #input must have 10 digits, which must all be numbers
-            break
          if(self.isInDataBase(phoneNumber, "phoneNumber")):
             print("There is already an account with this phone number!")
+         elif(len(phoneNumber) == 10 and phoneNumber.isdigit()): #input must have 10 digits, which must all be numbers
+            break
          print("Please input a valid phone number") 
          
 
@@ -109,17 +113,28 @@ class UserLogin:
          
          if(SSN == "cancel"):
             return()
-         if(len(SSN) == 9 and SSN.isdigit()): #input must have 9 digits, which must all be numbers
-            break
          if(self.isInDataBase(SSN, "SSN")):
             print("There is already an account with this SSN!")
+         elif(len(SSN) == 9 and SSN.isdigit()): #input must have 9 digits, which must all be numbers
+            break
          print("Please input a valid SSN") 
 
-
+      
       # add additional fields. For now, I am only doing First/Last name, email, password, phone number, and SSN
 
       #add confirm action conditional. 
-      newUser = UserInfo(firstName, lastName, email, password, phoneNumber, SSN)
+      
+      while(True):
+          print("Create account with this information?")
+          print(">Name: " + firstName + " " + lastName + "\n>Email: " + email + "\n>Password: " + password + "\n>Phone number: " + phoneNumber + "\n>SSN: " + SSN)
+          isCorrect = input("1: Confirm, 2: Cancel ")
+
+          if(isCorrect == "1"):
+              break
+          if(isCorrect == "2"):
+              return()
+          print("Please enter 1 or 2")
+      newUser = UserInfo(firstName, lastName, email, password, phoneNumber, SSN, {}, False)
       self.UserArray.append(newUser)
    
 
@@ -128,11 +143,24 @@ class UserLogin:
       while(self.loggedinUser is None): # Login Loop
          print("1: login, 2: create account, 3: quit")
          userIn = input("Select Option: ")
+
          if(userIn == "1"): # login
-            self.login()
+
+            if(self.login()):
+              user = self.loggedinUser #sets the user to the currently logged in user so we don't have to type self.loggedInUser... every time
+              print("welcome, " + user.firstName + user.lastName)
+
             while(self.loggedinUser is not None):
-               # when we are logged in we might want to have diffrent options.
-               pass # placeholder code
+               print("1: view account, 2: edit account info, 3: log out")
+               userIn = input("select Option:")
+
+               if(userIn == "3"): #logs the user out
+                   user = None
+                   self.loggedinUser = None
+                   print("You have logged out!")
+                   break
+               break # placeholder code. Add account functionality later   
+
          elif(userIn == "2"): # create account
             self.create_account()
          elif(userIn == "3"): # exit
@@ -142,4 +170,4 @@ class UserLogin:
 
 
 if __name__=="__main__":
-   UserLogin().main()
+   UserLogin().main()       
