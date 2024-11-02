@@ -144,7 +144,7 @@ class UserLogin:
          print("1: login, 2: create account, 3: quit")
          userIn = input("Select Option: ")
 
-         if(userIn == "1"): # login
+         if(userIn == "1"): # menu: login
 
             if(self.login()):
               user = self.loggedinUser #sets the user to the currently logged in user so we don't have to type self.loggedInUser... every time
@@ -161,9 +161,9 @@ class UserLogin:
                    break
                break # placeholder code. Add account functionality later   
 
-         elif(userIn == "2"): # create account
+         elif(userIn == "2"): # menu: create account
             self.create_account()
-         elif(userIn == "3"): # exit
+         elif(userIn == "3"): # menu: exit
             break
       
       

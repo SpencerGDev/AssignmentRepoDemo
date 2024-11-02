@@ -1,6 +1,5 @@
 import unittest
-from UserLogon import UserInfo, UserLogin  # Replace 'your_module' with the actual module name
-
+from UserLogon import UserInfo, UserLogin  
 class SimpleUserLoginTest(unittest.TestCase):
     
     def setUp(self):
