@@ -8,7 +8,6 @@ class UserInfo:
    email: str
    password: str
    phoneNumber: str
-   SSN: str
    symptom_list: list
    insurance: bool 
 
@@ -109,15 +108,15 @@ class UserLogin:
          
 
       while(True):
-         SSN = input("Enter your Social Security Number: ")
-         
-         if(SSN == "cancel"):
-            return()
-         if(self.isInDataBase(SSN, "SSN")):
-            print("There is already an account with this SSN!")
-         elif(len(SSN) == 9 and SSN.isdigit()): #input must have 9 digits, which must all be numbers
+         insuranceInput = input("Do you currently have insurance? Yes or No").lower()
+         if(insuranceInput == "no"):
+            insurance = False
             break
-         print("Please input a valid SSN") 
+         elif(insuranceInput == "yes"):
+            insurance = True
+            break
+         else:
+            print("Please input a valid input: Yes or No") 
 
       
       # add additional fields. For now, I am only doing First/Last name, email, password, phone number, and SSN
@@ -126,7 +125,7 @@ class UserLogin:
       
       while(True):
           print("Create account with this information?")
-          print(">Name: " + firstName + " " + lastName + "\n>Email: " + email + "\n>Password: " + password + "\n>Phone number: " + phoneNumber + "\n>SSN: " + SSN)
+          print(">Name: " + firstName + " " + lastName + "\n>Email: " + email + "\n>Password: " + password + "\n>Phone number: " + phoneNumber + "\nInsurance " + str(insurance) )
           isCorrect = input("1: Confirm, 2: Cancel ")
 
           if(isCorrect == "1"):
@@ -134,7 +133,7 @@ class UserLogin:
           if(isCorrect == "2"):
               return()
           print("Please enter 1 or 2")
-      newUser = UserInfo(firstName, lastName, email, password, phoneNumber, SSN, {}, False)
+      newUser = UserInfo(firstName, lastName, email, password, phoneNumber, {}, insurance)
       self.UserArray.append(newUser)
    
 
