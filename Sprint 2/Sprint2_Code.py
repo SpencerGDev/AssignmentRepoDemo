@@ -148,7 +148,10 @@ class UserLogin:
         if(UserInfo.fieldMap.get(fieldNum) == "symptom_list"):
             self.editSymptoms()
             return()
-    
+        if(UserInfo.fieldMap.get(fieldNum)[0] == "phoneNumber"):
+            print("Please enter a new valid 10 digit number")
+            
+
         newValue = self.getValidInput("Input what you want to update "+UserInfo.fieldMap.get(fieldNum)[0] +" to: ", UserInfo.fieldMap.get(fieldNum)[1], self.isInDataBase) #update to change specification parameter
         if(newValue is None):
             return()
@@ -172,15 +175,15 @@ class UserLogin:
             if(len(user.symptom_list) == 0):
                 print("There are currently no symptoms to remove")
                 return()
-        print("here's the current symptom list: ")
-        print(", ".join(map(str, user.symptom_list))) # prints the list
-        symptom = self.getValidInput("Input a symptom to remove: ", lambda x, isInDataBase: x in user.symptom_list, self.isInDataBase)
-        if(symptom is None):
-          return()
-        user.symptom_list.remove(symptom)
-        print("removed " + symptom)
+            print("here's the current symptom list: ")
+            print(", ".join(map(str, user.symptom_list))) # prints the list
+            symptom = self.getValidInput("Input a symptom to remove: ", lambda x, isInDataBase: x in user.symptom_list, self.isInDataBase)
+            if(symptom is None):
+                return()
+            user.symptom_list.remove(symptom)
+            print("removed " + symptom)
 
-    def viewInfo(self): # prints out account info
+    def viewInfo(self): # prints out accFiount info
         user = self.loggedinUser
 
         print("name: " + user.firstName +" "+ user.lastName)
@@ -191,7 +194,6 @@ class UserLogin:
         else:
             print("symptoms: ")
             print(", ".join(map(str, user.symptom_list))) # prints the list
-            print()
         if(user.insurance):
             print("insurance: yes")
         else:
