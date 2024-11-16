@@ -138,7 +138,7 @@ class UserLogin:
             return()
     
         while(True):
-            print("1:first name 2:last name 3:email 4:password 5:phone number 6:insurance 7:SSN 8:Symptons")
+            print("1:first name 2:last name 3:email 4:password 5:phone number 6:insurance 7:SSN 8:Symptoms")
             fieldNum = input("Which info would you like to edit? ")
             if(fieldNum in UserInfo.fieldMap): # checks to make sure the input number is mapped to a UserInfo field
                 break # leaves while loop to next input loop
@@ -161,27 +161,28 @@ class UserLogin:
 
     def editSymptoms(self):
         user = self.loggedinUser
-        option = self.getValidInput("Do you want to 1: add a symptom, or 2: remove a symptom? ", lambda x,  isInDataBase: x in ["1", "2"], self.isInDataBase)
-        
-        if(option is None):
-             return()  
-        if(option == "1"):
-            symptom = self.getValidInput("Input a symptom to add: ", lambda x, isInDataBase: (len(x) > 0 and len(x) <= 50), self.isInDataBase )
-            if(symptom is None):
-                return()
-            user.symptom_list.append(symptom)
-            print("added " + symptom + " to symptom list.")
-        else:
-            if(len(user.symptom_list) == 0):
-                print("There are currently no symptoms to remove")
-                return()
-            print("here's the current symptom list: ")
-            print(", ".join(map(str, user.symptom_list))) # prints the list
-            symptom = self.getValidInput("Input a symptom to remove: ", lambda x, isInDataBase: x in user.symptom_list, self.isInDataBase)
-            if(symptom is None):
-                return()
-            user.symptom_list.remove(symptom)
-            print("removed " + symptom)
+        while(True):
+            option = self.getValidInput("Do you want to 1: Add a symptom, 2: Remove a symptom? or 3: Exit menu ", lambda x,  isInDataBase: x in ["1", "2", "3"], self.isInDataBase)
+            
+            if(option == "3" or option is None):
+                return()  
+            if(option == "1"):
+                symptom = self.getValidInput("Input a symptom to add: ", lambda x, isInDataBase: (len(x) > 0 and len(x) <= 50), self.isInDataBase )
+                if(symptom is None):
+                    return()
+                user.symptom_list.append(symptom)
+                print("added " + symptom + " to symptom list.")
+            else:
+                if(len(user.symptom_list) == 0):
+                    print("There are currently no symptoms to remove")
+                    return()
+                print("here's the current symptom list: ")
+                print(", ".join(map(str, user.symptom_list))) # prints the list
+                symptom = self.getValidInput("Input a symptom to remove: ", lambda x, isInDataBase: x in user.symptom_list, self.isInDataBase)
+                if(symptom is None):
+                    return()
+                user.symptom_list.remove(symptom)
+                print("removed " + symptom)
 
     def viewInfo(self): # prints out accFiount info
         user = self.loggedinUser
