@@ -2,7 +2,16 @@ from dataclasses import dataclass, field
 from tkinter import TRUE
 from xmlrpc.client import Boolean
 from enum import Enum
+from threading import Thread
+from typing import List # for type hinting
 
+
+@dataclass 
+class MedicineInfo:
+    rxName: str
+    time: float = None
+    timer: Thread = None
+    stopFlag : bool = False # used to terminate thread early
 
 @dataclass
 class UserInfo:
@@ -14,7 +23,7 @@ class UserInfo:
    SSN: str  = ""
    symptom_list : list  = field(default_factory= list)
    insurance: bool = None
-
+   medicineList : List[MedicineInfo]
 
    fieldMap = { #maps input integers to 2-tuple fields. First parameter is the field name, and the second is a lambda function that can validate a potential input
            "1": ("firstName",lambda x, isInDataBase: len(x) <= 50),
@@ -27,7 +36,7 @@ class UserInfo:
            "8": ("symptom_list")
               }
    
-   
+
 class UserLogin:
 
     def __init__(self) -> None:
@@ -119,17 +128,67 @@ class UserLogin:
       
     def userAccount(self):
         while(self.loggedinUser is not None):   #these lines are commented out because they will be repeated in a seperate method for account menu
-            print("1: view account, 2: edit account info, 3: log out")
+            print("1: Add medication reminder, 2: view account, 3: edit account info, 4: log out")
             userIn = input("select Option: ")
 
-            if(userIn == "3"): #logs the user out
+            if(userIn == "4"): #logs the user out
                 self.loggedinUser = None
                 print("You have logged out!")
                 return()
-            if(userIn == "2"):
+            if(userIn == "3"):
                 self.editInfo()
-            if(userIn == "1"):
+            if(userIn == "2"):
                 self.viewInfo()
+            if(userIn == "1"):
+                self.modifyMedicine()
+                
+                
+
+    def modifyMedicine(self):
+        pass
+    
+    def addMedicineReminder(self):
+        #prompt user for when. 
+        pass
+    
+    def viewMedicine(self): # prints medicine list and reminder time if given
+        pass    
+
+    def addMedicine(self):
+        while(True):
+            entry = input("Enter the name of the medicine you are currently taking, Type exit to exit.")
+            if(entry.lower() == "exit"):
+                break 
+            if(validMedicine(entry) == False):
+                continue
+            
+            newMedicine = MedicineInfo(entry)
+            
+
+            while(True):
+                optionalTimer = input("Would you like to add a reminder? This can be done at anytime. 1 for yes, 2 for no.")
+
+                if(optionalTimer == "1"):
+                    self.addMedicineReminder(newMedicine)
+                if(optionalTimer == "2"):
+                    break
+                
+            self.loggedinUser.medicineList.append(newMedicine) 
+            return()
+    
+                    
+            
+    
+    def validMedicine() -> bool:
+        """
+        simple checks to check input, maybe if length is none, only a number, easy testable things
+        print what went wrong before returing
+        """
+        pass
+    
+    def removeMedicine(): # easy iterate and remove from list
+        pass
+        
 
     def editInfo(self): #edits account info
         # user must input password first
