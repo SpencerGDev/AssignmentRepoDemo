@@ -242,7 +242,7 @@ class UserLogin:
             
     def validateID(self, medID : str):
         mediD = int(medID)
-        for i, _ in enumerate(self.loggedinUser.medicineList):
+        for i in enumerate(self.loggedinUser.medicineList):
             if(i == mediD):
                 return True
         print("ID does not exist. enter a valid ID")
@@ -262,11 +262,10 @@ class UserLogin:
         
     def viewMedicine(self): # prints medicine list and reminder time if given
         print("Your medicine list:")
-        
         for i, med in enumerate(self.loggedinUser.medicineList):
             timersconcat = ""
-            for t, _ in med.timers: # _ ignores the triggered flag
-                currentTimer = t.strftime('%I:%M %p')
+            for t in med.timers: 
+                currentTimer = t.time_obj.strftime('%I:%M %p')
                 timersconcat += currentTimer + " | "
             print(f"ID: {i} | Name {med.rxName} | Timers set: {timersconcat}") 
 
