@@ -138,7 +138,7 @@ class UserLogin:
              self.userAccount()
              
     def monitorTimers(self):
-        print("hi")
+        # print("hi")
         while(self.exitFlag == False):
             time.sleep(1) # sleep for a second each iteration to not overload cpu
             if(self.UserArray is None): 
@@ -169,7 +169,7 @@ class UserLogin:
         
 
     def userAccount(self):
-        while(self.loggedinUser is not None):   #these lines are commented out because they will be repeated in a seperate method for account menu
+        while(self.loggedinUser is not None):
             print("1: Add medication reminder, 2: view account, 3: edit account info, 4: log out")
             userIn = input("select Option: ")
 
@@ -199,7 +199,7 @@ class UserLogin:
             elif(option == "3"):
                 self.addMedicineReminderWrapper()
             elif(option == "4"):
-                self.removeTimer() # TODO:
+                self.removeTimer()
             elif(option == "5"):
                 self.viewMedicineWrapper()
             elif(option == "6"):
@@ -220,6 +220,8 @@ class UserLogin:
         #prompt user for when. 
         while(True):
             reminderTime = input("What time would you like your reminder to go off?\nEx: 7:30PM, 1:00PM\n")
+            if(reminderTime == "exit"):
+                break
             if(self.validTime(reminderTime) == True):
                 break
         
@@ -232,7 +234,9 @@ class UserLogin:
         while(True):
             self.viewMedicine()
             query = input("Which Medicine would you like to add a reminder for. Enter ID\n")
-            if(self.validateID(query) == True):
+            if(query == "exit"):
+                break
+            elif(self.validateID(query) == True):
                 selectedMed = self.loggedinUser.medicineList[int(query)]
                 self.addMedicineReminder(selectedMed)
                 break
@@ -241,11 +245,17 @@ class UserLogin:
         
             
     def validateID(self, medID : str):
-        mediD = int(medID)
-        for i in enumerate(self.loggedinUser.medicineList):
-            if(i == mediD):
-                return True
-        print("ID does not exist. enter a valid ID")
+        # print(medID)
+        try:
+            mediD = int(medID)
+            # print("test")
+            for i, _ in enumerate(self.loggedinUser.medicineList):
+                if(i == mediD):
+                    return True
+            # print(mediD + " " + i)
+            print("ID does not exist. enter a valid ID")
+        except ValueError:
+            print("Please input a valid Medicine ID: ")
         return False
         
         
@@ -259,7 +269,7 @@ class UserLogin:
             if(confirm == ""):
                 break
         
-        
+
     def viewMedicine(self): # prints medicine list and reminder time if given
         print("Your medicine list:")
         for i, med in enumerate(self.loggedinUser.medicineList):
@@ -299,13 +309,62 @@ class UserLogin:
         simple checks to check input, maybe if length is none, only a number, easy testable things
         print what went wrong before returing
         """
-        #TODO:
-        pass
-    
-    def removeMedicine(): # easy iterate and remove item from list
-        #TODO:
-        pass
+        if(len(entry) < 1 or len(entry) >= 50):
+            print("Please enter a medicine with between 1 and 50 characters: ")
+            return(False)
+        if(entry.isdigit()):
+            print("Please enter a medicine name, not number: ")
+            return(False)
         
+        return(True)
+    
+    def removeMedicine(self): # easy iterate and remove item from list
+        while(True):
+            self.viewMedicine()
+            choice = input("Enter the ID of the medicine you want to remove: ")
+            if(choice == "exit"):
+                break
+            if(self.validateID(choice)):
+                del self.loggedinUser.medicineList[int(choice)]
+                break
+
+    def removeTimer(self):
+        while(True):
+            self.viewMedicine()
+            medicinePick = input("Please input the ID for the medicine of the timer that you want to remove: ")
+            if(medicinePick == "exit"):
+                return()
+            if(self.validateID(medicinePick)):
+                break
+        
+        med = self.loggedinUser.medicineList[int(medicinePick)]
+        if(len(med.timers) == 0):
+            print("There are no timers to remove!")
+            return()
+
+        while(True):
+            print("here are the timers you can remove: ")
+            # timerList = ""
+            i = 0
+            for timer in med.timers:
+                print(f"{i}: {timer.time_obj.strftime('%I:%M %p')}")
+                i += 1
+            
+            timerPick = input("Which timer would you like to remove? ")
+            if(timerPick == "exit"):
+                return()
+            if(not timerPick.isdigit()):
+                print("Please enter the number for the timer you want to remove!")
+                continue
+            intPick = int(timerPick)
+            if(intPick < 0 or intPick >= len(med.timers)):
+                print("Please enter the number for the timer you want to remove!")
+                continue
+
+            del(med.timers[intPick])
+            print("Here is your updated medicine reminder list: ")
+            self.viewMedicine()
+            return()
 
     def editInfo(self): #edits account info
         # user must input password first
